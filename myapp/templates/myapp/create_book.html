@@ -11,33 +11,12 @@
         {{ form|crispy }}
 
         <button type="submit" class="btn btn-primary w-20 mt-3">Register</button>
+        <a href="{% url "home" %}" class="btn btn-secondary w-20 mt-3 ms-2">Go Home</a>
     </form>
 
 
 </div>
 
-{% comment %} <div class="container">
-    <h1 class="text-center mt-4">Register a new book</h1>
-<form method="post" class="container col-md-4" style="margin-top: 35px">
-    {% csrf_token %}
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Book title</label>
-    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Ex:. The Silent Sea">
-  </div>
-
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Author</label>
-    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Ex:. Laura Bennett">
-  </div>
-  
-  
-  <div class="form-group">
-    <label for="exampleFormControlTextarea1">Description</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1"placeholder="Write the book description here" rows="8"></textarea>
-  </div>
-  <a href="{% url "home" %}" class="btn btn-primary mt-4">Register</a>
-</form>
-</div> {% endcomment %}
 {% endblock content %}
 
 
