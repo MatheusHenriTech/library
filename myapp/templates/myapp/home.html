@@ -15,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for book in books %}
+                {% for book in page_obj %}
                     <tr>
                     <th scope="row">{{ book.id }}</th>
                     <td>{{ book.title }}</td>
@@ -60,11 +60,22 @@
             </tbody>        
         </table>
 
-        <a href="{% url "create_book" %}" class="btn btn-primary">New Book</a>
+        <div>
+            {% if page_obj.has_previous %}
+                <a href="{% url "home" %}?page={{ page_obj.previous_page_number }}"
+                style="text-decoration: none; font-size: 1.1em;">Previous</a>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <a href="{% url "home" %}?page={{ page_obj.next_page_number }}"
+                style="text-decoration: none; font-size: 1.1em; margin-left: 6px">Next</a>
+            {% endif %}
+
+        </div>
+
+        <a href="{% url "create_book" %}" class="btn btn-primary mt-4">New Book</a>
     </main>
 
 {% endblock content %}
-
-
 
 

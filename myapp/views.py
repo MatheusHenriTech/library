@@ -3,11 +3,16 @@ from .forms import BookForm
 from .models import Book
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.urls import reverse_lazy
+from django.core.paginator import Paginator
 
 
 def home(request):
     books = Book.objects.all()
-    return render(request, 'myapp/home.html', {'books': books})
+
+    books_paginator = Paginator(books, 10)
+    page_number = request.GET.get("page")
+    page_obj = books_paginator.get_page(page_number)
+    return render(request, 'myapp/home.html', {'page_obj': page_obj})
 
 
 class edit_book(UpdateView):
