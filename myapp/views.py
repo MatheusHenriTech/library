@@ -78,4 +78,4 @@ def login_user(request):
             login(request, user)
             return redirect('home')
         else:
-            return HttpResponse('The email or password are invalid')
+            return HttpResponse('The email or password is invalid')
