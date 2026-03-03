@@ -1,0 +1,23 @@
+{% extends "myapp/base.html" %}
+
+
+
+{% block content %}
+<div class="container mx-auto">
+    <h1 class="text-center mt-5">Login</h1>
+    <form action="{% url "login" %}" method="post" class="mx-auto w-25" style="margin-top: 50px">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="formGroupExampleInput" class="form-label">Username</label>
+            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Username..." name="username">
+        </div>
+        <div class="mb-3">
+            <label for="formGroupExampleInput2" class="form-label">Password</label>
+            <input type="password" class="form-control" id="formGroupExampleInput2" placeholder="Password..." name="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+
+
+{% endblock content %}
