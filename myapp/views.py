@@ -16,15 +16,17 @@ from django.contrib import messages
 
 @login_required(login_url="/book/login/")
 def home(request):
+    """Show a paginated list of books. Login required."""
     books = Book.objects.all()
-
+    username = request.user.username
     books_paginator = Paginator(books, 10)
     page_number = request.GET.get("page")
     page_obj = books_paginator.get_page(page_number)
-    return render(request, 'myapp/home.html', {'page_obj': page_obj})
+    return render(request, 'myapp/home.html', {'page_obj': page_obj, 'username': username})
 
 
 class edit_book(LoginRequiredMixin, UpdateView):
+    """Edit a book. Login required."""
     login_url = '/book/login/'
     model = Book
     fields = ["title", "author", "description"]
@@ -33,6 +35,7 @@ class edit_book(LoginRequiredMixin, UpdateView):
 
 
 class create_book(LoginRequiredMixin, CreateView):
+    """Create a new book. Login required."""
     login_url = '/book/login/'
     model = Book
     fields = ["title", "author", "description"]
@@ -41,6 +44,7 @@ class create_book(LoginRequiredMixin, CreateView):
 
 
 class delete_book(LoginRequiredMixin, DeleteView):
+    """Delete a book. Login required."""
     login_url = '/book/login/'
     model = Book
     template_name = "myapp/delete_book.html"
@@ -49,6 +53,7 @@ class delete_book(LoginRequiredMixin, DeleteView):
     
 
 def login_user(request):
+    """Handle user login: display form and authenticate credentials."""
     if request.method == "GET":
         return render(request, 'myapp/login.html')
     else:
@@ -56,7 +61,7 @@ def login_user(request):
         password = request.POST.get('password')
 
         user = authenticate(username=username, password=password)
-
+        context = {'username': username}
         if user:
             login(request, user)
             return redirect('home')
@@ -67,34 +72,35 @@ def login_user(request):
 
 @login_required(login_url="/book/login/")
 def logout_user(request):
+    """Log out the current user and redirect to home."""
     logout(request)
     return redirect('home')
 
 
 def register(request):
+    """Handle user registration: display form and create new users."""
     if request.method == "GET":
-        return redirect('register')
+        return render(request, 'myapp/register.html')
     else:
         username = request.POST.get('username')
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
-        username_exist = User.objects.filter(username=username).exists()
-        email_exist = User.objects.filter(email=email).exists()
-
-        if username_exist:
-            messages.error(request, "This username already exists", extra_tags="username_alert")
-            return redirect('register')
+        names = {'username': username, 'email': email, 'password': password1}
+        errors = {}
+        if User.objects.filter(username=username).exists():
+            errors['username_error'] = 'This username already exists'
         
-        elif email_exist:
-            messages.error(request, "This e-mail already exists", extra_tags="email_alert")
-            return redirect('register')
+        if User.objects.filter(email=email).exists():
+            errors['email_error'] = 'This e-mail already exists'
 
-        elif password1 != password2:
-            messages.error(request, "The password one is different of password2", extra_tags="password_alert")
-            return redirect('register')
+        if password1 != password2:
+            errors['password_error'] = 'Both passwords must be equals'
+        
+        if errors:
+            return render(request, 'myapp/register.html', context={**names, **errors})
         else:
-            new_user = User.objects.create_user(username=username, email=email, password=password1)
-            new_user.save()
-            return redirect('login')
+            User.objects.create_user(username=username, email=email, password=password1)
+            return render(request, 'myapp/login.html')
+        

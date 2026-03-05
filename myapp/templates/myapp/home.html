@@ -1,10 +1,15 @@
 {% extends "myapp/base.html" %}
 
-{% block content %}        
+{% block content %}   
+<style>
+    a:hover {
+        text-decoration: underline !important;
+    }
+</style>     
     <main class="container">
         <h1 class="d-flex align-items-center mt-4">
             List of Books
-            <a href="{% url 'logout' %}" class="btn btn-link ms-auto pe-2">Exit account</a><i class="bi bi-person" style="font-size: 1.7rem;"></i>
+            <p class="d-flex align-items-center ms-auto"style="font-size: 1.1rem;">Welcome {{ username.capitalize }} <a href="{% url 'logout' %}" class="btn btn-link ms-auto pe-2" style="text-decoration: none;"><span>Exit account</span></a><i class="bi bi-person" style="font-size: 1.7rem;"></i></p>
         </h1>
         <table class="table">
             <thead>
