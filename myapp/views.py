@@ -6,10 +6,12 @@ from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+
 
 
 @login_required(login_url="/book/login/")
@@ -44,25 +46,6 @@ class delete_book(LoginRequiredMixin, DeleteView):
     template_name = "myapp/delete_book.html"
     success_url = reverse_lazy('home')
 
-
-def register_user(request):
-    if request.method == "GET":
-        return render(request, 'myapp/register.html')
-
-    else:
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        user = User.objects.filter(username=username).first()
-    
-        if user:
-            return HttpResponse('This user already exists')
-        
-        user = User.objects.create_user(username=username, email=email, password=password)
-        user.save()
-        
-        return HttpResponse('usuário cadastrado')
     
 
 def login_user(request):
@@ -78,4 +61,40 @@ def login_user(request):
             login(request, user)
             return redirect('home')
         else:
-            return HttpResponse('The email or password is invalid')
+            messages.error(request, "The email or password is invalid")
+            return redirect('login')
+
+
+@login_required(login_url="/book/login/")
+def logout_user(request):
+    logout(request)
+    return redirect('home')
+
+
+def register(request):
+    if request.method == "GET":
+        return redirect('register')
+    else:
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        username_exist = User.objects.filter(username=username).exists()
+        email_exist = User.objects.filter(email=email).exists()
+
+        if username_exist:
+            messages.error(request, "This username already exists", extra_tags="username_alert")
+            return redirect('register')
+        
+        elif email_exist:
+            messages.error(request, "This e-mail already exists", extra_tags="email_alert")
+            return redirect('register')
+
+        elif password1 != password2:
+            messages.error(request, "The password one is different of password2", extra_tags="password_alert")
+            return redirect('register')
+        else:
+            new_user = User.objects.create_user(username=username, email=email, password=password1)
+            new_user.save()
+            return redirect('login')

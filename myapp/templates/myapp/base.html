@@ -11,7 +11,7 @@
     {% load bootstrap5 %}
     {% bootstrap_css %}
 
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
     {% bootstrap_javascript %}
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" style="background-color: #FAFAFA;">
     <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand ms-4 fs-4" href="{% url "home" %}">Library</a>
     </nav>
@@ -33,4 +33,5 @@
 <footer class="mt-auto">
     <p>&copy; 2026 Matheus Henrique. Todos os direitos reservados.</p>
 </footer>
+</body>
 </html>
