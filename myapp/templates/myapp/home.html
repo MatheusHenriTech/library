@@ -2,86 +2,112 @@
 
 {% block content %}   
 <style>
-    a:hover {
+    .link-underline:hover {
         text-decoration: underline !important;
     }
+    
+    .link-no-underline:hover {
+        text-decoration: none !important;
+    }
+
 </style>     
     <main class="container">
-        <h1 class="d-flex align-items-center mt-4">
-            List of Books
-            <p class="d-flex align-items-center ms-auto"style="font-size: 1.1rem;">Welcome {{ username.capitalize }} <a href="{% url 'logout' %}" class="btn btn-link ms-auto pe-2" style="text-decoration: none;"><span>Exit account</span></a><i class="bi bi-person" style="font-size: 1.7rem;"></i></p>
-        </h1>
-        <table class="table">
-            <thead>
-                <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Title</th>
-                <th scope="col">Author</th>
-                <th scope="col">Actions</th>
-                <th scope="col">Ações</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                {% for book in page_obj %}
+        {% if books %}
+            <h1 class="d-flex align-items-center mt-4">
+                List of Books
+                <p class="d-flex align-items-center ms-auto"style="font-size: 1.1rem;">Welcome {{ username.capitalize }} <a href="{% url 'logout' %}" class="btn btn-link pe-2 link-underline" style="text-decoration: none;"><span>Exit account</span></a><i class="bi bi-person" style="font-size: 1.7rem;"></i></p>
+            </h1>
+            <table class="table mt-4">
+                <thead>
                     <tr>
-                    <th scope="row">{{ book.id }}</th>
-                    <td>{{ book.title }}</td>
-                    <td>{{ book.author }}</td>
-                    <td>{{ book.description }}</td>
-                    <td class="text-nowrap">
-                        <a href="{% url "edit_book" book.pk %}" class="btn btn-warning">Edit</a>
-                        <!-- Botão que abre o modal -->
-                        <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#meuModal{{ book.id }}">
-                        Delete
-                        </button>
+                    <th scope="col">Id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Ações</th>
 
-                    <div class="modal fade" id="meuModal{{ book.id }}">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header"> <!-- Cabeçalho -->
-                                    <h5 class="modal-title">Book: {{ book.title }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in page_obj %}
+                        <tr>
+                        <th scope="row">{{ book.id }}</th>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.description }}</td>
+                        <td class="text-nowrap">
+                            <a href="{% url "edit_book" book.pk %}" class="btn btn-warning">Edit</a>
+                            <!-- Botão que abre o modal -->
+                            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#meuModal{{ book.id }}">
+                            Delete
+                            </button>
+
+                        <div class="modal fade" id="meuModal{{ book.id }}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header"> <!-- Cabeçalho -->
+                                        <h5 class="modal-title">Book: {{ book.title }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body"> <!-- Corpo -->
+                                        Are you sure you want to delete: <strong>{{ book.title }}</strong>?
                                 </div>
 
-                                <div class="modal-body"> <!-- Corpo -->
-                                    Are you sure you want to delete: <strong>{{ book.title }}</strong>?
-                            </div>
+                                <div class="modal-footer"> <!-- Rodapé -->
+                                    <form action="{% url "delete_book" book.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Yes, delete</button>
+                                    </form>
 
-                            <div class="modal-footer"> <!-- Rodapé -->
-                                <form action="{% url "delete_book" book.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Yes, delete</button>
-                                </form>
-
-                                <a href="{% url 'home' %}" class="btn btn-secondary">
-                                    Back
-                                </a>
+                                    <a href="{% url 'home' %}" class="btn btn-secondary">
+                                        Back
+                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    </td>
-                    </tr>
-                {% endfor %}
-            </tbody>        
-        </table>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>        
+            </table>
 
-        <div>
-            {% if page_obj.has_previous %}
-                <a href="{% url "home" %}?page={{ page_obj.previous_page_number }}"
-                style="text-decoration: none; font-size: 1.1em;">Previous</a>
-            {% endif %}
+            <div>
+                {% if page_obj.has_previous %}
+                    <a href="{% url "home" %}?page={{ page_obj.previous_page_number }}"
+                    style="text-decoration: none; font-size: 1.1em;">Previous</a>
+                {% endif %}
 
-            {% if page_obj.has_next %}
-                <a href="{% url "home" %}?page={{ page_obj.next_page_number }}"
-                style="text-decoration: none; font-size: 1.1em; margin-left: 6px">Next</a>
-            {% endif %}
+                {% if page_obj.has_next %}
+                    <a href="{% url "home" %}?page={{ page_obj.next_page_number }}"
+                    style="text-decoration: none; font-size: 1.1em; margin-left: 6px">Next</a>
+                {% endif %}
 
-        </div>
+            </div>
 
-        <a href="{% url "create_book" %}" class="btn btn-primary mt-4">New Book</a>
+            <a href="{% url "create_book" %}" class="btn btn-primary mt-4">New Book</a>
+            
+        {% else %}
+
+            <div class="mt-5 fw-bold d-flex justify-content-between align-items-center">
+                <p class="m-0 fs-3">Oh sorry, looks like that you don't have any books yet</p>
+
+                <p class="d-flex align-items-center m-0" style="font-size: 1rem;">
+                    Welcome {{ username.capitalize }}
+                    <a href="{% url 'logout' %}" class="btn btn-link pe-2 link-underline" style="text-decoration: none;">
+                        <span>Exit account</span>
+                    </a>
+                    <i class="bi bi-person" style="font-size: 1.7rem;"></i>
+                </p>
+            </div>
+
+            <div class="mt-5 fs-4">
+                <p>Create a new book <a href="{% url "create_book" %}" class="btn btn-success ms-1 link-no-underline">Create</a></p>
+            </div>
+        
+        {% endif %}
     </main>
 
 {% endblock content %}

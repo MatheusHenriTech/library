@@ -17,12 +17,12 @@ from django.contrib import messages
 @login_required(login_url="/book/login/")
 def home(request):
     """Show a paginated list of books. Login required."""
-    books = Book.objects.all()
+    books = Book.objects.filter(owner=request.user)
     username = request.user.username
     books_paginator = Paginator(books, 10)
     page_number = request.GET.get("page")
     page_obj = books_paginator.get_page(page_number)
-    return render(request, 'myapp/home.html', {'page_obj': page_obj, 'username': username})
+    return render(request, 'myapp/home.html', {'page_obj': page_obj, 'username': username, 'books': books})
 
 
 class edit_book(LoginRequiredMixin, UpdateView):
@@ -41,6 +41,11 @@ class create_book(LoginRequiredMixin, CreateView):
     fields = ["title", "author", "description"]
     template_name = "myapp/create_book.html"
     success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+    
 
 
 class delete_book(LoginRequiredMixin, DeleteView):
@@ -101,6 +106,6 @@ def register(request):
         if errors:
             return render(request, 'myapp/register.html', context={**names, **errors})
         else:
-            User.objects.create_user(username=username, email=email, password=password1)
+            user = User.objects.create_user(username=username, email=email, password=password1)
             return render(request, 'myapp/login.html')
         
