@@ -119,5 +119,8 @@ class delete_user(DeleteView):
         return self.request.user
 
 
+def my_books(request):
+    return render(request, 'myapp/mybooks.html')
+
 
 

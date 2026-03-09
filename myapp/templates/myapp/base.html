@@ -21,9 +21,20 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100" style="background-color: #FAFAFA;">
-    <nav class="navbar navbar-dark bg-dark">
-    <a class="navbar-brand ms-4 fs-4" href="{% url "home" %}">Library</a>
+    <nav class="navbar navbar-dark bg-dark d-flex">
+    <div class="dropdown">
+        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-list text-white fs-2 ms-3"></i>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="{% url "my_books" %}" class="dropdown-item">My books</a></li>
+        </ul>
+    </div>
+    <a class="navbar-brand ms-3 fs-4 me-auto" href="{% url "home" %}">Library</a>
+    
     </nav>
+
+
 
 {% block content %}
 
