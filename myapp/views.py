@@ -109,3 +109,15 @@ def register(request):
             user = User.objects.create_user(username=username, email=email, password=password1)
             return render(request, 'myapp/login.html')
         
+
+class delete_user(DeleteView):
+    model = User
+    template_name = "home.html"
+    success_url = reverse_lazy('login')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+
+
+

@@ -15,8 +15,56 @@
         {% if books %}
             <h1 class="d-flex align-items-center mt-4">
                 List of Books
-                <p class="d-flex align-items-center ms-auto"style="font-size: 1.1rem;">Welcome {{ username.capitalize }} <a href="{% url 'logout' %}" class="btn btn-link pe-2 link-underline" style="text-decoration: none;"><span>Exit account</span></a><i class="bi bi-person" style="font-size: 1.7rem;"></i></p>
+
+                <div class="d-flex flex-column align-items-end ms-auto">
+                    <p class="d-flex align-items-center" style="font-size: 1.1rem;">
+                        Welcome {{ username|capfirst }}
+                        <a href="{% url 'logout' %}" class="btn btn-link pe-2 link-underline" style="text-decoration: none;">
+                            <span>Exit account</span>
+                        </a>
+                        <i class="bi bi-person" style="font-size: 1.7rem;"></i>
+                    </p>
+
+                    <p class="d-flex align-items-center" style="font-size: 1rem;">
+                        <a href="#" 
+                            class="btn btn-link pe-2 link-underline" 
+                            style="text-decoration: none;"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteuser">
+
+                                <span>Delete account</span>
+                        </a>
+                        <i class="bi bi-exclamation-triangle fs-5"></i>
+                    </p>
+                </div>
             </h1>
+
+            <div class="modal fade" id="deleteuser">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header"> <!-- Cabeçalho -->
+                            <h5 class="modal-title">User: {{ username|capfirst }} </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body"> <!-- Corpo -->
+                            Are you sure you want to delete permanently your account: <strong>{{ username|capfirst }}</strong>?
+                        </div>
+
+                    <div class="modal-footer"> <!-- Rodapé -->
+                        <form action="{% url "deleteuser" %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Yes, delete</button>
+                        </form>
+
+                        <a href="{% url 'home' %}" class="btn btn-secondary">
+                            Back
+                        </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <table class="table mt-4">
                 <thead>
                     <tr>
@@ -55,7 +103,7 @@
                                 </div>
 
                                 <div class="modal-footer"> <!-- Rodapé -->
-                                    <form action="{% url "delete_book" book.id %}" method="post">
+                                    <form action="{% url "delete_book"  book.id %}" method="post">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-danger">Yes, delete</button>
                                     </form>
@@ -91,9 +139,12 @@
             
         {% else %}
 
-            <div class="mt-5 fw-bold d-flex justify-content-between align-items-center">
-                <p class="m-0 fs-3">Oh sorry, looks like that you don't have any books yet</p>
+        <div class="mt-5 fw-bold d-flex justify-content-between align-items-center">
+            <p class="m-0 fs-3">Oh sorry, looks like that you don't have any books yet</p>
 
+            <!-- Agrupando Welcome + Exit + Delete -->
+            <div class="d-flex flex-column align-items-end">
+                <!-- Usuário + Exit -->
                 <p class="d-flex align-items-center m-0" style="font-size: 1rem;">
                     Welcome {{ username.capitalize }}
                     <a href="{% url 'logout' %}" class="btn btn-link pe-2 link-underline" style="text-decoration: none;">
@@ -101,6 +152,45 @@
                     </a>
                     <i class="bi bi-person" style="font-size: 1.7rem;"></i>
                 </p>
+
+                <!-- Delete account abaixo -->
+                <p class="d-flex align-items-center m-0" style="font-size: 1rem;">
+                    <a href="#" 
+                        class="btn btn-link pe-2 link-underline" 
+                        style="text-decoration: none;"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#deleteuser">
+                        <span>Delete account</span>
+                    </a>
+                    <i class="bi bi-exclamation-triangle fs-5"></i>
+                </p>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteuser">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header"> <!-- Cabeçalho -->
+                            <h5 class="modal-title">User: {{ username|capfirst }} </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body"> <!-- Corpo -->
+                            Are you sure you want to delete permanently your account: <strong>{{ username|capfirst }}</strong>?
+                        </div>
+
+                    <div class="modal-footer"> <!-- Rodapé -->
+                        <form action="{% url "deleteuser" %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Yes, delete</button>
+                        </form>
+
+                        <a href="{% url 'home' %}" class="btn btn-secondary">
+                            Back
+                        </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-5 fs-4">
