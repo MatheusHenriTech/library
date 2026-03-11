@@ -25,45 +25,8 @@
                         <i class="bi bi-person" style="font-size: 1.7rem;"></i>
                     </p>
 
-                    <p class="d-flex align-items-center" style="font-size: 1rem;">
-                        <a href="#" 
-                            class="btn btn-link pe-2 link-underline" 
-                            style="text-decoration: none;"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#deleteuser">
-
-                                <span>Delete account</span>
-                        </a>
-                        <i class="bi bi-exclamation-triangle fs-5"></i>
-                    </p> 
                 </div>
             </h1>
-
-            <div class="modal fade" id="deleteuser">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header"> <!-- Cabeçalho -->
-                            <h5 class="modal-title">User: {{ username|capfirst }} </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body"> <!-- Corpo -->
-                            Are you sure you want to delete permanently your account: <strong>{{ username|capfirst }}</strong>?
-                        </div>
-
-                    <div class="modal-footer"> <!-- Rodapé -->
-                        <form action="{% url "deleteuser" %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Yes, delete</button>
-                        </form>
-
-                        <a href="{% url 'home' %}" class="btn btn-secondary">
-                            Back
-                        </a>
-                        </div>
-                    </div>
-                </div>
-            </div> 
 
             <table class="table mt-4">
                 <thead>
@@ -83,43 +46,7 @@
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.description }}</td>
-                        <td>{{ book.owner }}</td>
-                        {% comment %} <td class="text-nowrap">
-                            <a href="{% url "edit_book" book.pk %}" class="btn btn-warning">Edit</a>
-                            <!-- Botão que abre o modal -->
-                            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#meuModal{{ book.id }}">
-                            Delete
-                            </button>
-                        </td>
-                        
-
-                        <div class="modal fade" id="meuModal{{ book.id }}">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header"> <!-- Cabeçalho -->
-                                        <h5 class="modal-title">Book: {{ book.title }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-
-                                    <div class="modal-body"> <!-- Corpo -->
-                                        Are you sure you want to delete: <strong>{{ book.title }}</strong>?
-                                </div>
-
-                                <div class="modal-footer"> <!-- Rodapé -->
-                                    <form action="{% url "delete_book"  book.id %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Yes, delete</button>
-                                    </form>
-
-                                    <a href="{% url 'home' %}" class="btn btn-secondary">
-                                        Back
-                                    </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> {% endcomment %}
-
-                        
+                        <td>{{ book.owner }}</td>        
                         </tr>
                     {% endfor %}
                 </tbody>        

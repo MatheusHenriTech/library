@@ -123,7 +123,7 @@ class delete_user(LoginRequiredMixin, DeleteView):
         return self.request.user
 
 
-@login_required
+@login_required(login_url="/book/login/")
 def my_books(request):
     """Show a paginated list of your books. Login required."""
     books = Book.objects.filter(owner=request.user)
@@ -135,78 +135,63 @@ def my_books(request):
 
 
 class UserForm(forms.ModelForm):
+    username = forms.CharField(
+        max_length=150,
+        required=False,
+        help_text='',        
+    )
     password = forms.CharField(
         required=False,
-        widget=forms.PasswordInput,
-        label="Password 1",
+        max_length=150,
+        widget=forms.PasswordInput
+    
     )
-
     password2 = forms.CharField(
         required=False,
-        widget=forms.PasswordInput,
-        label="Password 2",
+        max_length=150,
+        widget=forms.PasswordInput
     )
-
-    username = forms.CharField(
-        required=False,
-        label="Username",
-        help_text=''
-    )
-
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password2 = cleaned_data.get("password2")
-        username = cleaned_data.get("username")
-        email = cleaned_data.get("email")
-        username = cleaned_data.get("username")
+        a = cleaned_data.get("password")
+        b = cleaned_data.get("password2")
+        c = cleaned_data.get("username")
+        d = cleaned_data.get("email")
+        if a or b:
+            if a != b:
+                self.add_error("password", "The both passwords must be equal")
+                self.add_error("password2", "The both passwords must be equal")
 
-        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
-            raise ValidationError({
-                'email': 'This e-mail already exists'
-            })
-        
-        if User.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
-            raise ValidationError({
-                'username': 'This username already exists'
-            })
+        if User.objects.filter(username=c).exclude(pk=self.instance.pk).exists():
+           self.add_error("username", "This username already exists")
 
-
-        if password or password2:
-            if password != password2:
-                 raise ValidationError({
-                    'password': 'Both passwords must be equal.',
-                    'password2': 'Both passwords must be equal.'
-                })
+        if User.objects.filter(email=d).exclude(pk=self.instance.pk).exists():
+            self.add_error("email","This email already exists")
 
         return cleaned_data
-
+    
 
     class Meta:
         model = User
         fields = ["username", "email"]
 
 
-class my_account(LoginRequiredMixin, UpdateView):
-    login_url = "/mybook/login/"
+class my_user(UpdateView):
     model = User
-    form_class = UserForm
     template_name = "myapp/myaccount.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy('home')
+    form_class = UserForm
+
+    def form_valid(self, form):
+        new_password = form.cleaned_data.get("password")
+        if new_password:
+            self.object.set_password(new_password)
+        self.object.save()
+        update_session_auth_hash(self.request, self.object)
+        return super().form_valid(form)
+    
 
     def get_object(self, queryset=None):
         return self.request.user
 
-    def form_valid(self, form):
-        username = form.cleaned_data.get("username")
-        if username:
-            self.object.username = username
-
-        password = form.cleaned_data.get("password")
-        if password:  
-            self.object.set_password(password) 
-            update_session_auth_hash(self.request, self.request.user)
-        
-        self.object.save()
-        return super().form_valid(form)
