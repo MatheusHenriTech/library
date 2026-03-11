@@ -11,13 +11,16 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django import forms
+from django.core.exceptions import ValidationError
+from django.contrib.auth import update_session_auth_hash
 
 
 
 @login_required(login_url="/book/login/")
 def home(request):
     """Show a paginated list of books. Login required."""
-    books = Book.objects.filter(owner=request.user)
+    books = Book.objects.all()
     username = request.user.username
     books_paginator = Paginator(books, 10)
     page_number = request.GET.get("page")
@@ -110,7 +113,8 @@ def register(request):
             return render(request, 'myapp/login.html')
         
 
-class delete_user(DeleteView):
+class delete_user(LoginRequiredMixin, DeleteView):
+    login_url = '/book/login/'
     model = User
     template_name = "home.html"
     success_url = reverse_lazy('login')
@@ -119,8 +123,90 @@ class delete_user(DeleteView):
         return self.request.user
 
 
+@login_required
 def my_books(request):
-    return render(request, 'myapp/mybooks.html')
+    """Show a paginated list of your books. Login required."""
+    books = Book.objects.filter(owner=request.user)
+    username = request.user.username
+    books_paginator = Paginator(books, 10)
+    page_number = request.GET.get("page")
+    page_obj = books_paginator.get_page(page_number)
+    return render(request, 'myapp/mybooks.html', {'page_obj': page_obj, 'username': username, 'books': books})
 
 
+class UserForm(forms.ModelForm):
+    password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput,
+        label="Password 1",
+    )
 
+    password2 = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput,
+        label="Password 2",
+    )
+
+    username = forms.CharField(
+        required=False,
+        label="Username*",
+        help_text=''
+    )
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password2 = cleaned_data.get("password2")
+        username = cleaned_data.get("username")
+        email = cleaned_data.get("email")
+        username = cleaned_data.get("username")
+
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise ValidationError({
+                'email': 'This e-mail already exists'
+            })
+        
+        if User.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
+            raise ValidationError({
+                'username': 'This username already exists'
+            })
+
+
+        if password or password2:
+            if password != password2:
+                 raise ValidationError({
+                    'password': 'Both passwords must be equal.',
+                    'password2': 'Both passwords must be equal.'
+                })
+
+        return cleaned_data
+
+
+    class Meta:
+        model = User
+        fields = ["username", "email"]
+
+
+class my_account(LoginRequiredMixin, UpdateView):
+    login_url = "/mybook/login/"
+    model = User
+    form_class = UserForm
+    template_name = "myapp/myaccount.html"
+    success_url = reverse_lazy("home")
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get("username")
+        if username:
+            self.object.username = username
+
+        password = form.cleaned_data.get("password")
+        if password:  
+            self.object.set_password(password) 
+            update_session_auth_hash(self.request, self.request.user)
+        
+        self.object.save()
+        return super().form_valid(form)

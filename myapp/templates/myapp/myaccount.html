@@ -1,0 +1,17 @@
+{% extends "myapp/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container mx-auto">
+    <h1 class="text-center mt-4">User: {{ request.user.username }}</h1>
+    <form method="post" class="col-md-6 mx-auto mt-4">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <button type="submit" class="btn btn-primary w-20 mt-3">Edit</button>
+        <a href="{% url "home" %}" class="btn btn-secondary w-20 mt-3 ms-2">Back</a>
+    </form>
+</div>
+{% endblock content %}
+

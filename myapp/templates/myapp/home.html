@@ -14,7 +14,7 @@
     <main class="container">
         {% if books %}
             <h1 class="d-flex align-items-center mt-4">
-                List of Books
+                All books 📕
 
                 <div class="d-flex flex-column align-items-end ms-auto">
                     <p class="d-flex align-items-center" style="font-size: 1.1rem;">
@@ -72,7 +72,7 @@
                     <th scope="col">Title</th>
                     <th scope="col">Author</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Ações</th>
+                    <th scope="col">Owner</th>
 
                     </tr>
                 </thead>
@@ -83,12 +83,15 @@
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.description }}</td>
-                        <td class="text-nowrap">
+                        <td>{{ book.owner }}</td>
+                        {% comment %} <td class="text-nowrap">
                             <a href="{% url "edit_book" book.pk %}" class="btn btn-warning">Edit</a>
                             <!-- Botão que abre o modal -->
                             <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#meuModal{{ book.id }}">
                             Delete
                             </button>
+                        </td>
+                        
 
                         <div class="modal fade" id="meuModal{{ book.id }}">
                             <div class="modal-dialog">
@@ -114,9 +117,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
 
-                        </td>
+                        
                         </tr>
                     {% endfor %}
                 </tbody>        
