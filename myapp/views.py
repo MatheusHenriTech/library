@@ -149,7 +149,7 @@ class UserForm(forms.ModelForm):
 
     username = forms.CharField(
         required=False,
-        label="Username*",
+        label="Username",
         help_text=''
     )
 
