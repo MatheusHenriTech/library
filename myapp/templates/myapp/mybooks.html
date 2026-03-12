@@ -28,44 +28,29 @@
                     <p class="d-flex align-items-center" style="font-size: 1rem;">
                         <a href="#" 
                             class="btn btn-link pe-2 link-underline" 
-                            style="text-decoration: none;"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#deleteuser">
-
-                                <span>Delete account</span>
+                            style="text-decoration: none;">
                         </a>
-                        <i class="bi bi-exclamation-triangle fs-5"></i>
                     </p>
                 </div>
             </h1>
 
-            <div class="modal fade" id="deleteuser">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header"> <!-- Cabeçalho -->
-                            <h5 class="modal-title">User: {{ username|capfirst }} </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
 
-                        <div class="modal-body"> <!-- Corpo -->
-                            Are you sure you want to delete permanently your account: <strong>{{ username|capfirst }}</strong>?
-                        </div>
-
-                    <div class="modal-footer"> <!-- Rodapé -->
-                        <form action="{% url "deleteuser" %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Yes, delete</button>
-                        </form>
-
-                        <a href="{% url 'home' %}" class="btn btn-secondary">
-                            Back
-                        </a>
-                        </div>
-                    </div>
+            <nav class="navbar bg-body-tertiary mt-4">
+                <div class="container-fluid">
+                    <form class="d-flex mx-auto w-50" role="search" method="GET">
+                    <input
+                        class="form-control me-2" style="height: 45px;" type="search" placeholder="Search for a book" aria-label="Search"
+                        name="q"
+                        value=
+                        
+                        />
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
                 </div>
-            </div>
+            </nav>
 
-            <table class="table mt-4">
+
+            <table class="table mt-5">
                 <thead>
                     <tr>
                     <th scope="col">Id</th>

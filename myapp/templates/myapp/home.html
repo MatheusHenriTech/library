@@ -27,8 +27,23 @@
 
                 </div>
             </h1>
+            
 
-            <table class="table mt-4">
+            <nav class="navbar bg-body-tertiary mt-4">
+                <div class="container-fluid">
+                    <form class="d-flex mx-auto w-50" role="search" method="GET">
+                    <input
+                        class="form-control me-2" style="height: 45px;" type="search" placeholder="Search for a book" aria-label="Search"
+                        name="q"
+                        value="{{ query }}"
+                    />
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
+
+
+            <table class="table mt-5">
                 <thead>
                     <tr>
                     <th scope="col">Id</th>
@@ -45,8 +60,11 @@
                         <th scope="row">{{ book.id }}</th>
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
-                        <td>{{ book.description }}</td>
-                        <td>{{ book.owner }}</td>        
+                        <td>{{ book.description|truncatechars:60}}</td>
+                        <td>{{ book.owner }}</td>
+                        <td>
+                            <a href="{% url "detail_book" book.id %}"><i class="bi bi-search"></i></a>
+                        </td>   
                         </tr>
                     {% endfor %}
                 </tbody>        

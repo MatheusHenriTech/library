@@ -1,0 +1,29 @@
+{% extends "myapp/base.html" %}
+
+{% block content %}
+    <div class="container mx-auto">
+        <h1 class="text-center mt-4">Details book</h1>
+        <div class="col-md-6 mx-auto mt-4">
+
+            <div class="mb-3">
+                <label class="form-label">Book title</label>
+                <div class="border rounded p-2 bg-light">{{ book.title }}</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Author</label>
+                <div class="border rounded p-2 bg-light">{{ book.author }}</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <div class="border rounded p-2 bg-light">{{ book.description }}</div>
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock content %}
+
+

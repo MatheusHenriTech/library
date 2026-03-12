@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import BookForm  
 from .models import Book
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
+from django.views.generic import DetailView
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 from django.http import HttpResponse
@@ -14,18 +15,29 @@ from django.contrib import messages
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import update_session_auth_hash
+from django.db.models import Q
 
 
 
 @login_required(login_url="/book/login/")
 def home(request):
     """Show a paginated list of books. Login required."""
-    books = Book.objects.all()
+    query = request.GET.get('q', '')
+
+    if query:
+        books = Book.objects.filter(
+            Q(title__icontains=query) |
+            Q(author__icontains=query) |
+            Q(description__icontains=query)
+        )
+    else:
+        books = Book.objects.all()
+    books.order_by('title')
     username = request.user.username
     books_paginator = Paginator(books, 10)
     page_number = request.GET.get("page")
     page_obj = books_paginator.get_page(page_number)
-    return render(request, 'myapp/home.html', {'page_obj': page_obj, 'username': username, 'books': books})
+    return render(request, 'myapp/home.html', {'page_obj': page_obj, 'username': username, 'books': books, 'query': query})
 
 
 class edit_book(LoginRequiredMixin, UpdateView):
@@ -177,7 +189,8 @@ class UserForm(forms.ModelForm):
         fields = ["username", "email"]
 
 
-class my_user(UpdateView):
+class my_user(LoginRequiredMixin, UpdateView):
+    login_url = '/book/login/'
     model = User
     template_name = "myapp/myaccount.html"
     success_url = reverse_lazy('home')
@@ -194,4 +207,17 @@ class my_user(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+    
+
+
+class detail_book(LoginRequiredMixin, DetailView):
+    login_url = '/book/login/'
+    model = Book
+    template_name = "myapp/detail_book.html"
+    context_object_name = 'book'
+
+    
+    
+
+
 
