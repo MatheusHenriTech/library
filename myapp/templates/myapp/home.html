@@ -14,7 +14,7 @@
     <main class="container">
         {% if books %}
             <h1 class="d-flex align-items-center mt-4">
-                All books 
+                All books 📕
 
                 <div class="d-flex flex-column align-items-end ms-auto">
                     <p class="d-flex align-items-center" style="font-size: 1.1rem;">
@@ -87,7 +87,93 @@
             
         {% else %}
 
-        <div class="mt-5 fw-bold d-flex justify-content-between align-items-center">
+            {% if query %}
+                <div class="mt-5 fw-bold d-flex justify-content-between align-items-center">
+                    <p class="m-0 fs-3">No results found for the search: "{{  query }}"</p>
+
+                    <div class="d-flex flex-column align-items-end">
+                        <p class="d-flex align-items-center m-0" style="font-size: 1rem;">
+                            Welcome {{ username.capitalize }}
+                            <a href="{% url 'logout' %}" class="btn btn-link pe-2 link-underline" style="text-decoration: none;">
+                                <span>Exit account</span>
+                            </a>
+                            <i class="bi bi-person" style="font-size: 1.7rem;"></i>
+                        </p>
+
+                    </div>  
+                </div>
+                <div class="mt-5 fs-4">
+                    <a href="{% url "home" %}" class="btn btn-secondary mt-3 w-" style="width: 80px;">Back</a>
+                </div>
+
+            {% else %}
+
+                <div class="mt-5 fw-bold d-flex justify-content-between align-items-center">
+                    <p class="m-0 fs-3">Oh sorry, looks like that you don't have any books yet</p>
+
+                    <!-- Agrupando Welcome + Exit + Delete -->
+                    <div class="d-flex flex-column align-items-end">
+                        <!-- Usuário + Exit -->
+                        <p class="d-flex align-items-center m-0" style="font-size: 1rem;">
+                            Welcome {{ username.capitalize }}
+                            <a href="{% url 'logout' %}" class="btn btn-link pe-2 link-underline" style="text-decoration: none;">
+                                <span>Exit account</span>
+                            </a>
+                            <i class="bi bi-person" style="font-size: 1.7rem;"></i>
+                        </p>
+
+                        <!-- Delete account abaixo -->
+                        <p class="d-flex align-items-center m-0" style="font-size: 1rem;">
+                            <a href="#" 
+                                class="btn btn-link pe-2 link-underline" 
+                                style="text-decoration: none;"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteuser">
+                                <span>Delete account</span>
+                            </a>
+                            <i class="bi bi-exclamation-triangle fs-5"></i>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteuser">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header"> <!-- Cabeçalho -->
+                                    <h5 class="modal-title">User: {{ username|capfirst }} </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="modal-body"> <!-- Corpo -->
+                                    Are you sure you want to delete permanently your account: <strong>{{ username|capfirst }}</strong>?
+                                </div>
+
+                            <div class="modal-footer"> <!-- Rodapé -->
+                                <form action="{% url "deleteuser" %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Yes, delete</button>
+                                </form>
+
+                                <a href="{% url 'home' %}" class="btn btn-secondary">
+                                    Back
+                                </a>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="mt-5 fs-4">
+                    <p>Create a new book <a href="{% url "create_book" %}" class="btn btn-success ms-1 link-no-underline">Create</a></p>
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+    </main>          
+{% endblock content %} 
+        
+    
+        {% comment %} <div class="mt-5 fw-bold d-flex justify-content-between align-items-center">
             <p class="m-0 fs-3">Oh sorry, looks like that you don't have any books yet</p>
 
             <!-- Agrupando Welcome + Exit + Delete -->
@@ -148,6 +234,6 @@
         {% endif %}
     </main>
 
-{% endblock content %}
+{% endblock content %} {% endcomment %}
 
 

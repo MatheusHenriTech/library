@@ -22,7 +22,7 @@ from django.db.models import Q
 @login_required(login_url="/book/login/")
 def home(request):
     """Show a paginated list of books. Login required."""
-    query = request.GET.get('q', '')
+    query = request.GET.get('q', '').strip()
 
     if query:
         books = Book.objects.filter(
@@ -68,7 +68,7 @@ class delete_book(LoginRequiredMixin, DeleteView):
     login_url = '/book/login/'
     model = Book
     template_name = "myapp/delete_book.html"
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('my_books')
 
     
 
@@ -138,12 +138,23 @@ class delete_user(LoginRequiredMixin, DeleteView):
 @login_required(login_url="/book/login/")
 def my_books(request):
     """Show a paginated list of your books. Login required."""
-    books = Book.objects.filter(owner=request.user)
+    query = request.GET.get('q', '').strip()
+
+    if query:
+        books = Book.objects.filter(
+            Q(title__icontains=query) |
+            Q(author__icontains=query) |
+            Q(description__icontains=query)
+        )
+    
+    else:
+        books = Book.objects.filter(owner=request.user)
+    books.order_by('title')
     username = request.user.username
     books_paginator = Paginator(books, 10)
     page_number = request.GET.get("page")
     page_obj = books_paginator.get_page(page_number)
-    return render(request, 'myapp/mybooks.html', {'page_obj': page_obj, 'username': username, 'books': books})
+    return render(request, 'myapp/mybooks.html', {'page_obj': page_obj, 'username': username, 'books': books, 'query': query})
 
 
 class UserForm(forms.ModelForm):
