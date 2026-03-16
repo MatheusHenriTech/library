@@ -228,6 +228,10 @@ class detail_book(LoginRequiredMixin, DetailView):
     context_object_name = 'book'
 
     
+
+
+
+    
     
 
 
