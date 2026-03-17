@@ -15,8 +15,10 @@
 </style>    
     <div class="container mx-auto">
         <h1 class="text-center mt-4">User: {{ request.user.username|capfirst }}</h1>
-        <form method="post" class="col-md-6 mx-auto mt-4">
+
+        <form method="post" enctype="multipart/form-data" class="col-md-6 mx-auto mt-4">
             {% csrf_token %}
+            <input type="file" name="my_file"> 
             {{ form|crispy }}
 
 

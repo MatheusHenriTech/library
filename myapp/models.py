@@ -10,8 +10,9 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='', null=True, blank=True)
 
-
-
-
-    
+    def __str__(self):
+        return self.user.username

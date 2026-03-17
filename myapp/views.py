@@ -16,6 +16,9 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q
+from PIL import Image
+from django.conf import settings
+from .forms import ProfileForm
 
 
 
@@ -206,6 +209,15 @@ class my_user(LoginRequiredMixin, UpdateView):
     template_name = "myapp/myaccount.html"
     success_url = reverse_lazy('home')
     form_class = UserForm
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['profile_form'] = ProfileForm(self.request.POST, self.request.FILES, isinstance=self.request.user.profile)
+        else:
+            data['profile_form'] = ProfileForm(isinstance=self.request.user.profile)
+        return data
+
 
     def form_valid(self, form):
         new_password = form.cleaned_data.get("password")
