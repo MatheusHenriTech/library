@@ -4,8 +4,13 @@
     <div class="container mx-auto">
         <h1 class="text-center mt-4">Details book</h1>
         <div class="col-md-6 mx-auto mt-4">
+            {% if book.cover %}
+                <img src="{{ book.cover.url }}" alt="{{ book.title }}" style="width: 140px; height: 140px;">
+            {% else %}
+                <p>No cover here</p>
+            {% endif %}
 
-            <div class="mb-3">
+            <div class="mb-3 mt-2">
                 <label class="form-label">Book title</label>
                 <div class="border rounded p-2 bg-light">{{ book.title }}</div>
             </div>

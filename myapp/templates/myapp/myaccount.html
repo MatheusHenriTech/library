@@ -1,5 +1,6 @@
 {% extends "myapp/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 
 {% block content %}
@@ -18,9 +19,7 @@
 
         <form method="post" enctype="multipart/form-data" class="col-md-6 mx-auto mt-4">
             {% csrf_token %}
-            <input type="file" name="my_file"> 
             {{ form|crispy }}
-
 
             <div class="d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-20 mt-3">Edit</button>
@@ -63,6 +62,7 @@
 
 
     </div>
+
 
 {% endblock content %}
     
