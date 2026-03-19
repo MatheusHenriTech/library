@@ -47,7 +47,7 @@ class edit_book(LoginRequiredMixin, UpdateView):
     """Edit a book. Login required."""
     login_url = '/book/login/'
     model = Book
-    fields = ["title", "author", "description"]
+    fields = ["title", "author", "description", "cover"]
     template_name = "myapp/edit_book.html"
     success_url = reverse_lazy('home')
 

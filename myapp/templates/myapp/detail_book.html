@@ -1,35 +1,51 @@
 {% extends "myapp/base.html" %}
 
 {% block content %}
-    <div class="container mx-auto">
-        <h1 class="text-center mt-4">Details book</h1>
-        <div class="col-md-6 mx-auto mt-4">
-            {% if book.cover %}
-                <img src="{{ book.cover.url }}" alt="{{ book.title }}" style="width: 140px; height: 140px;">
-            {% else %}
-                <p>No cover here</p>
-            {% endif %}
+<div class="container">
+    <h1 class="text-center mt-4">Details book</h1>
 
+    <div class="row mt-4 g-0 border border-secondary-subtle p-4">
+        <!-- ESQUERDA -->
+        <div class="col-md-6">
+            <p>Cover: </p>
+            {% if book.cover %}
+                <img src="{{ book.cover.url }}" alt="{{ book.title }}" style="width: 450px; height: 500px;">
+            {% else %}
+                <img src="/media/covers/noimage.avif" alt="No cover"
+                style="width: 400px; height: 420px;">
+            {% endif %}
+        </div>
+
+        <!-- DIREITA -->
+        <div class="col-md-6 p-0">
             <div class="mb-3 mt-2">
                 <label class="form-label">Book title</label>
-                <div class="border rounded p-2 bg-light">{{ book.title }}</div>
+                <div class="border rounded p-2 bg-light">
+                    {{ book.title }}
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Author</label>
-                <div class="border rounded p-2 bg-light">{{ book.author }}</div>
+                <div class="border rounded p-2 bg-light">
+                    {{ book.author }}
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <div class="border rounded p-2 bg-light" style="height:300px; overflow-wrap: break-word; overflow-y: auto;">{{ book.description }}</div>
+                <div class="border rounded p-2 bg-light"
+                     style="height:300px; overflow-wrap: break-word; overflow-y: auto;">
+                    {{ book.description }}
+                </div>
             </div>
 
-            <a href="{% url "home" %}" class="btn btn-secondary mt-3 w-" style="width: 80px;">Back</a>
-                
+            <a href="{% url 'home' %}" 
+               class="btn btn-secondary mt-3" 
+               style="width: 80px;">
+               Back
+            </a>
         </div>
     </div>
-
+</div>
 {% endblock content %}
-
-

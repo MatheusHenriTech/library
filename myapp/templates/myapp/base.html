@@ -45,8 +45,10 @@
 {% endblock content %}
 
 
-<footer class="mt-auto">
-    <p>&copy; 2026 Matheus Henrique. Todos os direitos reservados.</p>
+<footer class="mt-auto d-flex justify-content-between align-items-center p-3 bg-light">
+    <p class="mb-0">&copy; 2026 Matheus Henrique. Todos os direitos reservados.</p>
+    {% now "Y-m-d" as day %}
+    <p class="mb-0">{{ day }}</p>
 </footer>
 </body>
 </html>
